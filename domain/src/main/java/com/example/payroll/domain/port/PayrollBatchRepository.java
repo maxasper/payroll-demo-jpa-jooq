@@ -8,4 +8,6 @@ public interface PayrollBatchRepository {
     PayrollBatch save(PayrollBatch batch);
 
     Optional<PayrollBatch> findById(UUID id);
+
+    Optional<PayrollBatch> findWithPaymentsById(UUID id);
 }
