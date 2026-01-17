@@ -1,5 +1,6 @@
 package com.example.payroll.application.usecase;
 
+import com.example.payroll.application.port.PayrollStatsPort;
 import com.example.payroll.domain.PayrollBatch;
 import com.example.payroll.domain.port.PayrollBatchRepository;
 import jakarta.transaction.Transactional;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ExecutePayrollBatchUseCase {
     private final PayrollBatchRepository repository;
+    private final PayrollStatsPort statsPort;
     private final Clock clock;
 
     @Transactional
@@ -21,5 +23,6 @@ public class ExecutePayrollBatchUseCase {
         Instant now = clock.instant();
         batch.execute(now);
         repository.save(batch);
+        statsPort.upsertBatchStats(batchId);
     }
 }

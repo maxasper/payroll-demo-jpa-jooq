@@ -1,5 +1,6 @@
 package com.example.payroll;
 
+import com.example.payroll.application.port.PayrollStatsPort;
 import com.example.payroll.application.usecase.AddPayrollPaymentUseCase;
 import com.example.payroll.application.usecase.CreatePayrollBatchUseCase;
 import com.example.payroll.application.usecase.ExecutePayrollBatchUseCase;
@@ -31,7 +32,11 @@ public class PayrollDemoApplication {
     }
 
     @Bean
-    public ExecutePayrollBatchUseCase executePayrollBatchUseCase(PayrollBatchRepository repository, Clock clock) {
-        return new ExecutePayrollBatchUseCase(repository, clock);
+    public ExecutePayrollBatchUseCase executePayrollBatchUseCase(
+        PayrollBatchRepository repository,
+        PayrollStatsPort statsPort,
+        Clock clock
+    ) {
+        return new ExecutePayrollBatchUseCase(repository, statsPort, clock);
     }
 }

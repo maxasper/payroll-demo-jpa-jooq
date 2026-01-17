@@ -94,6 +94,14 @@ class BootstrapContextTest {
             batchId
         );
         assertThat(executedPayments).isEqualTo(2);
+
+        Map<String, Object> statsRow = jdbcTemplate.queryForMap(
+            "select payments_cnt, total_amount from payroll_stats where batch_id = ?",
+            batchId
+        );
+        assertThat(((Number) statsRow.get("payments_cnt")).intValue()).isEqualTo(2);
+        assertThat(new BigDecimal(statsRow.get("total_amount").toString()))
+            .isEqualByComparingTo(new BigDecimal("15.75"));
     }
 
     @Test
