@@ -4,19 +4,19 @@ Demo project showing when to use Spring Data JPA for transactional write models 
 
 ## Requirements
 - Java 21
-- Maven 3.9+
+- Maven Wrapper (`./mvnw`)
 - Docker (for component tests via Playtika Testcontainers)
 
 ## Build
 
 ```bash
-mvn clean verify
+./mvnw clean verify
 ```
 
 ## Run
 
 ```bash
-mvn -pl integrations/bootstrap spring-boot:run
+./mvnw -pl integrations/bootstrap spring-boot:run
 ```
 
 Environment variables for local runs:
