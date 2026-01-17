@@ -34,14 +34,14 @@ public class PayrollBatchController {
 
     @PostMapping("/{batchId}/payments")
     @ResponseStatus(HttpStatus.CREATED)
-    public PaymentResponse addPayment(@PathVariable UUID batchId, @RequestBody AddPaymentRequest request) {
+    public PaymentResponse addPayment(@PathVariable("batchId") UUID batchId, @RequestBody AddPaymentRequest request) {
         UUID paymentId = addPaymentUseCase.addPayment(batchId, request.getBeneficiary(), request.getAmount());
         return new PaymentResponse(paymentId);
     }
 
     @PostMapping("/{batchId}/execute")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void executeBatch(@PathVariable UUID batchId) {
+    public void executeBatch(@PathVariable("batchId") UUID batchId) {
         executeBatchUseCase.execute(batchId);
     }
 }
