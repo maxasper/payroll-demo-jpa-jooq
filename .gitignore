@@ -15,3 +15,11 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+openspec
+AGENTS.md
+.cursor
+/integrations/adapters/adapters.iml
+/application/application.iml
+/integrations/bootstrap/bootstrap.iml
+/component-test/component-test.iml
+.idea
