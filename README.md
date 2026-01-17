@@ -32,6 +32,12 @@ Environment variables for local runs:
 - `integrations/bootstrap`: Spring Boot entrypoint and all configuration.
 - `component-test`: Playtika PostgreSQL container tests and context validation.
 
+## Architecture Guardrails
+
+- `domain` and `application` stay framework-free (no Spring/JPA/jOOQ).
+- Spring configuration lives in `integrations/bootstrap` only.
+- Use `./mvnw` for local builds and runs.
+
 ## Migrations
 
 Flyway migrations live in `integrations/bootstrap/src/main/resources/db/migration`.

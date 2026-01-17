@@ -18,6 +18,8 @@
 
     <properties>
         <java.version>21</java.version>
+        <maven.version>3.9.6</maven.version>
+        <maven.enforcer.version>3.4.1</maven.enforcer.version>
         <spring-boot.version>3.2.5</spring-boot.version>
         <lombok.version>1.18.32</lombok.version>
         <playtika.version>3.1.0</playtika.version>
@@ -94,5 +96,30 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven.enforcer.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[21,22)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[${maven.version},)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
