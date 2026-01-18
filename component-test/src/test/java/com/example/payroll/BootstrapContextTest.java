@@ -3,6 +3,7 @@ package com.example.payroll;
 import com.playtika.testcontainer.common.spring.DockerPresenceBootstrapConfiguration;
 import com.playtika.testcontainer.postgresql.EmbeddedPostgreSQLBootstrapConfiguration;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -102,6 +105,16 @@ class BootstrapContextTest {
         assertThat(((Number) statsRow.get("payments_cnt")).intValue()).isEqualTo(2);
         assertThat(new BigDecimal(statsRow.get("total_amount").toString()))
             .isEqualByComparingTo(new BigDecimal("15.75"));
+
+        ResponseEntity<List<Map<String, Object>>> jpaResponse = restTemplate.exchange(
+            "/batches-jpa?page=0&size=10",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<>() {}
+        );
+        assertThat(jpaResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(jpaResponse.getBody()).isNotNull();
+        assertThat(jpaResponse.getBody()).isNotEmpty();
     }
 
     @Test

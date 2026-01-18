@@ -76,6 +76,13 @@ curl http://localhost:8080/batches?page=0&size=20
 ]
 ```
 
+## Optional: JPA listing contrast
+(Here’s the JPA listing endpoint: it works, but requires multiple steps to avoid paging pitfalls)
+
+```bash
+curl http://localhost:8080/batches-jpa?page=0&size=20
+```
+
 ## conclusion
 - JPA: best for transactional writes and domain invariants.
 - jOOQ: best for reporting, paging, and SQL-first aggregation.

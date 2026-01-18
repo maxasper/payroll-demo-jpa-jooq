@@ -1,20 +1,19 @@
 package com.example.payroll.integrations.adapters.web.rest;
 
-import com.example.payroll.integrations.adapters.jooq.PayrollBatchQueryService;
-import com.example.payroll.integrations.adapters.jooq.dto.BatchSummaryDto;
+import com.example.payroll.integrations.adapters.jpa.PayrollBatchJpaQueryService;
+import com.example.payroll.integrations.adapters.jpa.dto.BatchSummaryDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/batches")
+@RequestMapping("/batches-jpa")
 @RequiredArgsConstructor
-public class PayrollBatchReadController {
-    private final PayrollBatchQueryService queryService;
+public class PayrollBatchJpaController {
+    private final PayrollBatchJpaQueryService queryService;
 
     @GetMapping
     public List<BatchSummaryDto> listBatches(
