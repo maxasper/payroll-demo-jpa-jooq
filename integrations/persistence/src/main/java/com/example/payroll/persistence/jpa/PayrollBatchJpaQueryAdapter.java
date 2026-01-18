@@ -1,6 +1,7 @@
 package com.example.payroll.persistence.jpa;
 
-import com.example.payroll.persistence.jpa.dto.BatchSummaryDto;
+import com.example.payroll.domain.BatchSummary;
+import com.example.payroll.domain.port.PayrollBatchJpaQueryPort;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +15,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PayrollBatchJpaQueryService {
+public class PayrollBatchJpaQueryAdapter implements PayrollBatchJpaQueryPort {
     private final PayrollBatchJpaRepository repository;
 
-    public List<BatchSummaryDto> listBatches(String status, Long customerId, int page, int size, String sort) {
+    @Override
+    public List<BatchSummary> listBatches(String status, Long customerId, int page, int size, String sort) {
         PayrollBatchStatusEntity statusEntity = status == null ? null : PayrollBatchStatusEntity.valueOf(status);
         Sort sortSpec = resolveSort(sort);
 
@@ -32,14 +34,14 @@ public class PayrollBatchJpaQueryService {
         // It can explode row counts and lead to incorrect page sizes or multiple bag exceptions.
 
         List<PayrollBatchEntity> batches = repository.findWithPaymentsByIdIn(ids);
-        Map<UUID, BatchSummaryDto> summaries = batches.stream()
+        Map<UUID, BatchSummary> summaries = batches.stream()
             .collect(Collectors.toMap(
                 PayrollBatchEntity::getId,
                 batch -> {
                     BigDecimal totalAmount = batch.getPayments().stream()
                         .map(PayrollPaymentEntity::getAmount)
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    return new BatchSummaryDto(
+                    return new BatchSummary(
                         batch.getId(),
                         batch.getCustomerId(),
                         batch.getStatus().name(),

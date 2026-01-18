@@ -1,6 +1,6 @@
 package com.example.payroll.persistence.jooq;
 
-import com.example.payroll.application.port.PayrollStatsPort;
+import com.example.payroll.domain.port.PayrollStatsPort;
 
 import java.math.BigDecimal;
 import java.time.Instant;

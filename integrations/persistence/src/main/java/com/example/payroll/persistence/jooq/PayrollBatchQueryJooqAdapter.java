@@ -1,18 +1,19 @@
 package com.example.payroll.persistence.jooq;
 
-import com.example.payroll.persistence.jooq.dto.BatchSummaryDto;
+import com.example.payroll.domain.BatchSummary;
+import com.example.payroll.domain.port.PayrollBatchQueryPort;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.SortField;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PayrollBatchQueryService {
+public class PayrollBatchQueryJooqAdapter implements PayrollBatchQueryPort {
     private final PayrollBatchReportRepository repository;
 
-    public List<BatchSummaryDto> listBatches(
+    @Override
+    public List<BatchSummary> listBatches(
         String status,
         Long customerId,
         int page,

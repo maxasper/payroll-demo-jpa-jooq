@@ -1,4 +1,4 @@
-package com.example.payroll.application.port;
+package com.example.payroll.domain.port;
 
 import java.util.UUID;
 

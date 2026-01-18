@@ -1,7 +1,7 @@
 package com.example.payroll.web.rest;
 
-import com.example.payroll.persistence.jpa.PayrollBatchJpaQueryService;
-import com.example.payroll.persistence.jpa.dto.BatchSummaryDto;
+import com.example.payroll.application.usecase.ListPayrollBatchesJpaUseCase;
+import com.example.payroll.domain.BatchSummary;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/batches-jpa")
 @RequiredArgsConstructor
 public class PayrollBatchJpaController {
-    private final PayrollBatchJpaQueryService queryService;
+    private final ListPayrollBatchesJpaUseCase queryService;
 
     @GetMapping
-    public List<BatchSummaryDto> listBatches(
+    public List<BatchSummary> listBatches(
         @RequestParam(name = "status", required = false) String status,
         @RequestParam(name = "customerId", required = false) Long customerId,
         @RequestParam(name = "page", defaultValue = "0") int page,

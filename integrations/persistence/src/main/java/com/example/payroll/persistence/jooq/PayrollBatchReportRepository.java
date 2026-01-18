@@ -1,6 +1,6 @@
 package com.example.payroll.persistence.jooq;
 
-import com.example.payroll.persistence.jooq.dto.BatchSummaryDto;
+import com.example.payroll.domain.BatchSummary;
 import lombok.RequiredArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -35,7 +35,7 @@ public class PayrollBatchReportRepository {
 
     private final DSLContext dsl;
 
-    public List<BatchSummaryDto> fetchBatchSummaries(
+    public List<BatchSummary> fetchBatchSummaries(
             String status,
             Long customerId,
             int page,
@@ -77,7 +77,7 @@ public class PayrollBatchReportRepository {
                 .fetch();
 
         return records.stream()
-                .map(record -> new BatchSummaryDto(
+                .map(record -> new BatchSummary(
                         record.value1(),
                         record.value2(),
                         record.value3(),

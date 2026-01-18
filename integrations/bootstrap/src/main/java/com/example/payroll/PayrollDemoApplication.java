@@ -1,10 +1,19 @@
 package com.example.payroll;
 
-import com.example.payroll.application.port.PayrollStatsPort;
 import com.example.payroll.application.usecase.AddPayrollPaymentUseCase;
+import com.example.payroll.application.usecase.AddPayrollPaymentService;
+import com.example.payroll.application.usecase.CreatePayrollBatchService;
 import com.example.payroll.application.usecase.CreatePayrollBatchUseCase;
+import com.example.payroll.application.usecase.ExecutePayrollBatchService;
 import com.example.payroll.application.usecase.ExecutePayrollBatchUseCase;
+import com.example.payroll.application.usecase.ListPayrollBatchesService;
+import com.example.payroll.application.usecase.ListPayrollBatchesUseCase;
+import com.example.payroll.application.usecase.ListPayrollBatchesJpaService;
+import com.example.payroll.application.usecase.ListPayrollBatchesJpaUseCase;
 import com.example.payroll.domain.port.PayrollBatchRepository;
+import com.example.payroll.domain.port.PayrollBatchJpaQueryPort;
+import com.example.payroll.domain.port.PayrollBatchQueryPort;
+import com.example.payroll.domain.port.PayrollStatsPort;
 import java.time.Clock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,12 +32,12 @@ public class PayrollDemoApplication {
 
     @Bean
     public CreatePayrollBatchUseCase createPayrollBatchUseCase(PayrollBatchRepository repository, Clock clock) {
-        return new CreatePayrollBatchUseCase(repository, clock);
+        return new CreatePayrollBatchService(repository, clock);
     }
 
     @Bean
     public AddPayrollPaymentUseCase addPayrollPaymentUseCase(PayrollBatchRepository repository, Clock clock) {
-        return new AddPayrollPaymentUseCase(repository, clock);
+        return new AddPayrollPaymentService(repository, clock);
     }
 
     @Bean
@@ -37,6 +46,16 @@ public class PayrollDemoApplication {
         PayrollStatsPort statsPort,
         Clock clock
     ) {
-        return new ExecutePayrollBatchUseCase(repository, statsPort, clock);
+        return new ExecutePayrollBatchService(repository, statsPort, clock);
+    }
+
+    @Bean
+    public ListPayrollBatchesUseCase listPayrollBatchesUseCase(PayrollBatchQueryPort queryPort) {
+        return new ListPayrollBatchesService(queryPort);
+    }
+
+    @Bean
+    public ListPayrollBatchesJpaUseCase listPayrollBatchesJpaUseCase(PayrollBatchJpaQueryPort queryPort) {
+        return new ListPayrollBatchesJpaService(queryPort);
     }
 }

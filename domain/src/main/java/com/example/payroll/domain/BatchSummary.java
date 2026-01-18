@@ -1,4 +1,4 @@
-package com.example.payroll.persistence.jpa.dto;
+package com.example.payroll.domain;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -6,7 +6,7 @@ import java.util.UUID;
 import lombok.Value;
 
 @Value
-public class BatchSummaryDto {
+public class BatchSummary {
     UUID batchId;
     long customerId;
     String status;
