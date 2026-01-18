@@ -19,6 +19,11 @@ Demo project showing when to use Spring Data JPA for transactional write models 
 ./mvnw -pl integrations/bootstrap spring-boot:run
 ```
 
+## JPA vs jOOQ Summary
+
+- **JPA write model:** transactional batch creation, payment additions, and execution with domain invariants.
+- **jOOQ read model:** SQL-first batch listing with aggregates and paging-friendly queries.
+
 Environment variables for local runs:
 - `JDBC_URL` (default: `jdbc:postgresql://localhost:5432/payroll`)
 - `DB_USERNAME` (default: `payroll`)
@@ -32,10 +37,11 @@ Environment variables for local runs:
 - `integrations/bootstrap`: Spring Boot entrypoint and all configuration.
 - `component-test`: Playtika PostgreSQL container tests and context validation.
 
-## Architecture Guardrails
+## Module Layout & Guardrails
 
-- `domain` and `application` stay framework-free (no Spring/JPA/jOOQ).
-- Spring configuration lives in `integrations/bootstrap` only.
+- DDD + hexagonal split: core (`domain`, `application`) vs adapters (`integrations/*`).
+- `domain` and `application` stay framework-free (no Spring/JPA/jOOQ annotations).
+- Spring configuration and wiring live in `integrations/bootstrap` only.
 - Use `./mvnw` for local builds and runs.
 
 ## Migrations
