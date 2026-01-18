@@ -5,7 +5,7 @@
 - Start the app:
 
 ```bash
-./mvnw -pl integrations/bootstrap spring-boot:run
+./mvnw -pl integrations/bootstrap -am spring-boot:run
 ```
 
 - Base URL: `http://localhost:8080`

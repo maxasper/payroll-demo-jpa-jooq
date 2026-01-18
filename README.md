@@ -16,7 +16,7 @@ Demo project showing when to use Spring Data JPA for transactional write models 
 ## Run
 
 ```bash
-./mvnw -pl integrations/bootstrap spring-boot:run
+./mvnw -pl integrations/bootstrap -am spring-boot:run
 ```
 
 Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
