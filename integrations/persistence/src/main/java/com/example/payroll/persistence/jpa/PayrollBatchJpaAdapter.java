@@ -10,15 +10,20 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class PayrollBatchJpaAdapter implements PayrollBatchRepository {
+    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchJpaAdapter.class);
+
     private final PayrollBatchJpaRepository repository;
 
     @Override
     public PayrollBatch save(PayrollBatch batch) {
+        logger.info("JPA saving payroll batch id={} payments={}", batch.getId(), batch.getPayments().size());
         PayrollBatchEntity entity = toEntity(batch);
         PayrollBatchEntity saved = repository.save(entity);
         return toDomain(saved, true);
@@ -26,12 +31,14 @@ public class PayrollBatchJpaAdapter implements PayrollBatchRepository {
 
     @Override
     public Optional<PayrollBatch> findById(UUID id) {
+        logger.info("JPA fetching payroll batch id={}", id);
         return repository.findById(id)
             .map(entity -> toDomain(entity, false));
     }
 
     @Override
     public Optional<PayrollBatch> findWithPaymentsById(UUID id) {
+        logger.info("JPA fetching payroll batch with payments id={}", id);
         return repository.findWithPaymentsById(id)
             .map(entity -> toDomain(entity, true));
     }

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import static org.jooq.impl.DSL.field;
@@ -17,6 +19,8 @@ import static org.jooq.impl.DSL.table;
 @Repository
 @RequiredArgsConstructor
 public class PayrollStatsJooqAdapter implements PayrollStatsPort {
+    private static final Logger logger = LoggerFactory.getLogger(PayrollStatsJooqAdapter.class);
+
     private static final Field<UUID> BATCH_ID = field("batch_id", UUID.class);
     private static final Field<Integer> PAYMENTS_CNT = field("payments_cnt", Integer.class);
     private static final Field<BigDecimal> TOTAL_AMOUNT = field("total_amount", BigDecimal.class);
@@ -26,6 +30,7 @@ public class PayrollStatsJooqAdapter implements PayrollStatsPort {
 
     @Override
     public void upsertBatchStats(UUID batchId) {
+        logger.info("jOOQ upserting stats for batch id={}", batchId);
         Field<Integer> paymentsCount = DSL.select(DSL.count())
             .from(table("payroll_payment"))
             .where(field("batch_id").eq(batchId))

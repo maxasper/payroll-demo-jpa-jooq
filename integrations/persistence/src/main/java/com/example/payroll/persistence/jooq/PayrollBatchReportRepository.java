@@ -8,6 +8,8 @@ import org.jooq.Field;
 import org.jooq.Record7;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -21,6 +23,8 @@ import static org.jooq.impl.DSL.table;
 @Repository
 @RequiredArgsConstructor
 public class PayrollBatchReportRepository {
+    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchReportRepository.class);
+
     private static final Field<UUID> BATCH_ID = field("payroll_batch.id", UUID.class);
     private static final Field<Long> CUSTOMER_ID = field("payroll_batch.customer_id", Long.class);
     private static final Field<String> STATUS = field("payroll_batch.status", String.class);
@@ -38,6 +42,14 @@ public class PayrollBatchReportRepository {
             int size,
             SortField<?> sortField
     ) {
+        logger.info(
+            "jOOQ fetching batch summaries status={} customerId={} page={} size={} sort={}",
+            status,
+            customerId,
+            page,
+            size,
+            sortField
+        );
         Condition condition = DSL.noCondition();
         if (status != null) {
             condition = condition.and(STATUS.eq(status));

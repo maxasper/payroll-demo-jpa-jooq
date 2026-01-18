@@ -24,6 +24,9 @@ curl -X POST http://localhost:8080/batches \
 {"batchId":"<uuid>"}
 ```
 
+**Logging cue**
+Look for the Hibernate SQL statements and bind values showing the insert for `payroll_batch`.
+
 ## 2) Add two payments (JPA write model)
 (Payments are added under the aggregate, enforcing invariants)
 
@@ -42,6 +45,9 @@ curl -X POST http://localhost:8080/batches/<uuid>/payments \
 {"paymentId":"<uuid>"}
 ```
 
+**Logging cue**
+The logs should show JPA writing the new `payroll_payment` rows along with SQL bind values.
+
 ## 3) Execute batch (transactional JPA write model)
 (Execution validates the batch and updates payment statuses in one transaction)
 
@@ -53,6 +59,9 @@ curl -X POST http://localhost:8080/batches/<uuid>/execute
 ```
 HTTP/1.1 202 Accepted
 ```
+
+**Logging cue**
+Watch the JPA logs for the update statements that flip payment statuses.
 
 ## 4) List batches (jOOQ read model)
 (Now switch to SQL-first reads: a single query with joins and aggregates)
@@ -75,6 +84,9 @@ curl http://localhost:8080/batches?page=0&size=20
   }
 ]
 ```
+
+**Logging cue**
+You should see the jOOQ query in the logs, including the generated SQL for the joins and aggregation.
 
 ## Optional: JPA listing contrast
 (Here’s the JPA listing endpoint: it works, but requires multiple steps to avoid paging pitfalls)
