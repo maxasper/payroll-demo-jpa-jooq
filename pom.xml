@@ -11,7 +11,8 @@
     <modules>
         <module>domain</module>
         <module>application</module>
-        <module>integrations/adapters</module>
+        <module>integrations/persistence</module>
+        <module>integrations/web</module>
         <module>integrations/bootstrap</module>
         <module>component-test</module>
     </modules>
@@ -41,7 +42,12 @@
             </dependency>
             <dependency>
                 <groupId>com.example.payroll</groupId>
-                <artifactId>adapters</artifactId>
+                <artifactId>persistence</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example.payroll</groupId>
+                <artifactId>web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
