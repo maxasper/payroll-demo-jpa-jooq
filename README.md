@@ -19,6 +19,8 @@ Demo project showing when to use Spring Data JPA for transactional write models 
 ./mvnw -pl integrations/bootstrap spring-boot:run
 ```
 
+Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
+
 ## JPA vs jOOQ Summary
 
 - **JPA write model:** transactional batch creation, payment additions, and execution with domain invariants.
