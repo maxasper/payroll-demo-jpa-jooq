@@ -3,10 +3,15 @@ embedded:
     enabled: true
   postgresql:
     enabled: true
+    networkAlias: payroll-db
+  payroll-service:
+    enabled: true
+    dockerImage: payroll-demo-jpa-jooq:local
+    port: 8080
 
 spring:
   main:
-    web-application-type: servlet
+    web-application-type: none
   datasource:
     url: jdbc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
     username: ${embedded.postgresql.user}

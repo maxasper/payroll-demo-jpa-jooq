@@ -1,37 +1,59 @@
 package com.example.payroll;
 
-import com.playtika.testcontainer.common.spring.DockerPresenceBootstrapConfiguration;
-import com.playtika.testcontainer.postgresql.EmbeddedPostgreSQLBootstrapConfiguration;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.playtika.testcontainer.common.spring.DockerPresenceBootstrapConfiguration;
+import com.playtika.testcontainer.postgresql.EmbeddedPostgreSQLBootstrapConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.http.client.ClientHttpResponse;
+import java.io.IOException;
+import org.testcontainers.containers.GenericContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = PayrollDemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import({
-    DockerPresenceBootstrapConfiguration.class,
-    EmbeddedPostgreSQLBootstrapConfiguration.class
-})
+@SpringBootTest(classes = ComponentTestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "embedded.containers.enabled=true",
+    "embedded.postgresql.enabled=true"
+})
 class BootstrapContextTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private GenericContainer<?> payrollServiceContainer;
+
+    @Autowired
+    private PayrollServiceContainerProperties serviceProperties;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    BootstrapContextTest() {
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+                return false;
+            }
+        });
+    }
+
+    private String baseUrl() {
+        return "http://" + payrollServiceContainer.getHost() + ":" + payrollServiceContainer.getMappedPort(serviceProperties.getPort());
+    }
 
     @Test
     void contextLoads() {
@@ -55,7 +77,7 @@ class BootstrapContextTest {
     @Test
     void createAddExecuteFlowUpdatesStatusesAndTotals() {
         ResponseEntity<Map> createResponse = restTemplate.postForEntity(
-            "/batches",
+            baseUrl() + "/batches",
             Map.of("customerId", 1001),
             Map.class
         );
@@ -63,21 +85,28 @@ class BootstrapContextTest {
         UUID batchId = UUID.fromString(createResponse.getBody().get("batchId").toString());
 
         ResponseEntity<Map> paymentOne = restTemplate.postForEntity(
-            "/batches/" + batchId + "/payments",
+            baseUrl() + "/batches/" + batchId + "/payments",
             Map.of("beneficiary", "Alice", "amount", new BigDecimal("10.50")),
             Map.class
         );
         assertThat(paymentOne.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         ResponseEntity<Map> paymentTwo = restTemplate.postForEntity(
-            "/batches/" + batchId + "/payments",
+            baseUrl() + "/batches/" + batchId + "/payments",
             Map.of("beneficiary", "Bob", "amount", new BigDecimal("5.25")),
             Map.class
         );
         assertThat(paymentTwo.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
+        Integer paymentCount = jdbcTemplate.queryForObject(
+            "select count(*) from payroll_payment where batch_id = ?",
+            Integer.class,
+            batchId
+        );
+        assertThat(paymentCount).isEqualTo(2);
+
         ResponseEntity<Void> executeResponse = restTemplate.postForEntity(
-            "/batches/" + batchId + "/execute",
+            baseUrl() + "/batches/" + batchId + "/execute",
             null,
             Void.class
         );
@@ -107,7 +136,7 @@ class BootstrapContextTest {
             .isEqualByComparingTo(new BigDecimal("15.75"));
 
         ResponseEntity<List<Map<String, Object>>> jpaResponse = restTemplate.exchange(
-            "/batches-jpa?page=0&size=10",
+            baseUrl() + "/batches-jpa?page=0&size=10",
             HttpMethod.GET,
             null,
             new ParameterizedTypeReference<>() {}
@@ -120,32 +149,32 @@ class BootstrapContextTest {
     @Test
     void executeNewBatchFailsAndAddingAfterExecutionFails() {
         ResponseEntity<Map> createResponse = restTemplate.postForEntity(
-            "/batches",
+            baseUrl() + "/batches",
             Map.of("customerId", 2002),
             Map.class
         );
         UUID batchId = UUID.fromString(createResponse.getBody().get("batchId").toString());
 
         ResponseEntity<Void> executeResponse = restTemplate.postForEntity(
-            "/batches/" + batchId + "/execute",
+            baseUrl() + "/batches/" + batchId + "/execute",
             null,
             Void.class
         );
         assertThat(executeResponse.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
 
         restTemplate.postForEntity(
-            "/batches/" + batchId + "/payments",
+            baseUrl() + "/batches/" + batchId + "/payments",
             Map.of("beneficiary", "Alice", "amount", new BigDecimal("12.00")),
             Map.class
         );
         restTemplate.postForEntity(
-            "/batches/" + batchId + "/execute",
+            baseUrl() + "/batches/" + batchId + "/execute",
             null,
             Void.class
         );
 
         ResponseEntity<Map> addAfterExecute = restTemplate.postForEntity(
-            "/batches/" + batchId + "/payments",
+            baseUrl() + "/batches/" + batchId + "/payments",
             Map.of("beneficiary", "Bob", "amount", new BigDecimal("8.00")),
             Map.class
         );
