@@ -1,0 +1,14 @@
+services:
+  demo-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: payroll
+      POSTGRES_USER: payroll
+      POSTGRES_PASSWORD: payroll
+    ports:
+      - "5432:5432"
+    volumes:
+      - demo-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  demo-postgres-data:

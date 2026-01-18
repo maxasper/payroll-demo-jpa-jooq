@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payroll
+    username: payroll
+    password: payroll
+  jpa:
+    hibernate:
+      ddl-auto: none
+  jooq:
+    sql-dialect: postgres
+  flyway:
+    enabled: true
+    locations: classpath:db/migration

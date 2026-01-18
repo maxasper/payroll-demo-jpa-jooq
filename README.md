@@ -19,6 +19,16 @@ Demo project showing when to use Spring Data JPA for transactional write models 
 ./mvnw -pl integrations/bootstrap -am spring-boot:run
 ```
 
+## Demo Run (Docker Compose)
+
+```bash
+docker compose up -d
+./mvnw -pl integrations/bootstrap -am spring-boot:run -Dspring-boot.run.profiles=demo
+```
+
+To debug in an IDE, set the active Spring profile to `demo` and run the bootstrap module.
+Stop the database with `docker compose down` when finished.
+
 Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
 
 ## JPA vs jOOQ Summary
