@@ -7,6 +7,7 @@ import com.example.payroll.web.rest.dto.AddPaymentRequest;
 import com.example.payroll.web.rest.dto.BatchResponse;
 import com.example.payroll.web.rest.dto.CreateBatchRequest;
 import com.example.payroll.web.rest.dto.PaymentResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,10 @@ public class PayrollBatchController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+        summary = "Create a payroll batch",
+        description = "Controller: PayrollBatchController. Technology: JPA write model."
+    )
     public BatchResponse createBatch(@RequestBody CreateBatchRequest request) {
         UUID batchId = createBatchUseCase.create(request.getCustomerId());
         return new BatchResponse(batchId);
@@ -34,6 +39,10 @@ public class PayrollBatchController {
 
     @PostMapping("/{batchId}/payments")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+        summary = "Add a payment to a batch",
+        description = "Controller: PayrollBatchController. Technology: JPA write model."
+    )
     public PaymentResponse addPayment(@PathVariable("batchId") UUID batchId, @RequestBody AddPaymentRequest request) {
         UUID paymentId = addPaymentUseCase.addPayment(batchId, request.getBeneficiary(), request.getAmount());
         return new PaymentResponse(paymentId);
@@ -41,6 +50,10 @@ public class PayrollBatchController {
 
     @PostMapping("/{batchId}/execute")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @Operation(
+        summary = "Execute a payroll batch",
+        description = "Controller: PayrollBatchController. Technology: JPA write model with jOOQ stats upsert."
+    )
     public void executeBatch(@PathVariable("batchId") UUID batchId) {
         executeBatchUseCase.execute(batchId);
     }

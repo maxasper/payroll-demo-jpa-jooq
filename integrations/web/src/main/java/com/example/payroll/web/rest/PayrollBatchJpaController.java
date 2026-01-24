@@ -2,6 +2,7 @@ package com.example.payroll.web.rest;
 
 import com.example.payroll.application.usecase.ListPayrollBatchesJpaUseCase;
 import com.example.payroll.domain.BatchSummary;
+import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,10 @@ public class PayrollBatchJpaController {
     private final ListPayrollBatchesJpaUseCase queryService;
 
     @GetMapping
+    @Operation(
+        summary = "List payroll batches (JPA)",
+        description = "Controller: PayrollBatchJpaController. Technology: JPA read model."
+    )
     public List<BatchSummary> listBatches(
         @RequestParam(name = "status", required = false) String status,
         @RequestParam(name = "customerId", required = false) Long customerId,
