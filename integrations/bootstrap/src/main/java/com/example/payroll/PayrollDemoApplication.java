@@ -10,7 +10,7 @@ import com.example.payroll.application.usecase.ListPayrollBatchesService;
 import com.example.payroll.application.usecase.ListPayrollBatchesUseCase;
 import com.example.payroll.application.usecase.ListPayrollBatchesJpaService;
 import com.example.payroll.application.usecase.ListPayrollBatchesJpaUseCase;
-import com.example.payroll.domain.port.PayrollBatchRepository;
+import com.example.payroll.domain.port.PayrollBatchRepositoryPort;
 import com.example.payroll.domain.port.PayrollBatchJpaQueryPort;
 import com.example.payroll.domain.port.PayrollBatchQueryPort;
 import com.example.payroll.domain.port.PayrollStatsPort;
@@ -31,18 +31,18 @@ public class PayrollDemoApplication {
     }
 
     @Bean
-    public CreatePayrollBatchUseCase createPayrollBatchUseCase(PayrollBatchRepository repository, Clock clock) {
+    public CreatePayrollBatchUseCase createPayrollBatchUseCase(PayrollBatchRepositoryPort repository, Clock clock) {
         return new CreatePayrollBatchService(repository, clock);
     }
 
     @Bean
-    public AddPayrollPaymentUseCase addPayrollPaymentUseCase(PayrollBatchRepository repository, Clock clock) {
+    public AddPayrollPaymentUseCase addPayrollPaymentUseCase(PayrollBatchRepositoryPort repository, Clock clock) {
         return new AddPayrollPaymentService(repository, clock);
     }
 
     @Bean
     public ExecutePayrollBatchUseCase executePayrollBatchUseCase(
-        PayrollBatchRepository repository,
+        PayrollBatchRepositoryPort repository,
         PayrollStatsPort statsPort,
         Clock clock
     ) {

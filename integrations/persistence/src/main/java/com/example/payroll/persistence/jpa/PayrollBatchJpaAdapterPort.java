@@ -4,7 +4,7 @@ import com.example.payroll.domain.PayrollBatch;
 import com.example.payroll.domain.PayrollBatchStatus;
 import com.example.payroll.domain.PayrollPayment;
 import com.example.payroll.domain.PayrollPaymentStatus;
-import com.example.payroll.domain.port.PayrollBatchRepository;
+import com.example.payroll.domain.port.PayrollBatchRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class PayrollBatchJpaAdapter implements PayrollBatchRepository {
-    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchJpaAdapter.class);
+public class PayrollBatchJpaAdapterPort implements PayrollBatchRepositoryPort {
+    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchJpaAdapterPort.class);
 
     private final PayrollBatchJpaRepository repository;
 

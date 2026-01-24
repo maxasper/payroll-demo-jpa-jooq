@@ -31,6 +31,11 @@ Stop the database with `docker compose down` when finished.
 
 Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
 
+## Reference Docs
+
+- `docs/demo-script.md`: 5-minute walkthrough script
+- `docs/data-endpoints.md`: table and endpoint reference
+
 ## JPA vs jOOQ Summary
 
 - **JPA write model:** transactional batch creation, payment additions, and execution with domain invariants.

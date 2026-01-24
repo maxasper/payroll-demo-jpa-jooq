@@ -1,7 +1,7 @@
 package com.example.payroll.application.usecase;
 
 import com.example.payroll.domain.PayrollBatch;
-import com.example.payroll.domain.port.PayrollBatchRepository;
+import com.example.payroll.domain.port.PayrollBatchRepositoryPort;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.UUID;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CreatePayrollBatchService implements CreatePayrollBatchUseCase {
-    private final PayrollBatchRepository repository;
+    private final PayrollBatchRepositoryPort repository;
     private final Clock clock;
 
     @Override

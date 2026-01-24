@@ -4,7 +4,7 @@ import com.example.payroll.domain.PayrollBatch;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PayrollBatchRepository {
+public interface PayrollBatchRepositoryPort {
     PayrollBatch save(PayrollBatch batch);
 
     Optional<PayrollBatch> findById(UUID id);
