@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class PayrollBatchJpaAdapterPort implements PayrollBatchRepositoryPort {
-    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchJpaAdapterPort.class);
+public class PayrollBatchRepositoryPortAdapter implements PayrollBatchRepositoryPort {
+    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchRepositoryPortAdapter.class);
 
     private final PayrollBatchJpaRepository repository;
 
