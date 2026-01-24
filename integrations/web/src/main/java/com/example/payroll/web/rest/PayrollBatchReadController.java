@@ -3,18 +3,21 @@ package com.example.payroll.web.rest;
 import com.example.payroll.application.usecase.ListPayrollBatchesUseCase;
 import com.example.payroll.domain.BatchSummary;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/batches")
 @RequiredArgsConstructor
 public class PayrollBatchReadController {
+    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchReadController.class);
+
     private final ListPayrollBatchesUseCase queryService;
 
     @GetMapping
@@ -29,6 +32,20 @@ public class PayrollBatchReadController {
         @RequestParam(name = "size", defaultValue = "20") int size,
         @RequestParam(name = "sort", required = false) String sort
     ) {
-        return queryService.listBatches(status, customerId, page, size, sort);
+        long startTime = System.nanoTime();
+        logger.info(
+            "Endpoint GET /batches called with status={}, customerId={}, page={}, size={}, sort={}",
+            status,
+            customerId,
+            page,
+            size,
+            sort
+        );
+        try {
+            return queryService.listBatches(status, customerId, page, size, sort);
+        } finally {
+            long durationMs = (System.nanoTime() - startTime) / 1_000_000;
+            logger.info("Endpoint GET /batches completed in {} ms", durationMs);
+        }
     }
 }
