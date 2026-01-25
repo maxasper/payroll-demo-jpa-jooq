@@ -35,6 +35,7 @@ Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
 
 - `docs/demo-script.md`: 5-minute walkthrough script
 - `docs/data-endpoints.md`: table and endpoint reference
+- `docs/flow-diagrams.md`: flow diagrams with JPA/jOOQ markers
 
 ## JPA vs jOOQ Summary
 
