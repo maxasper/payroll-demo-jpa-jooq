@@ -1,6 +1,10 @@
 package com.example.payroll.persistence.jooq;
 
 import com.example.payroll.domain.BatchSummary;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -10,20 +14,17 @@ import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
 @Repository
+@Profile("jooq-dsl | !jooq-codegen")
 @RequiredArgsConstructor
-public class PayrollBatchReportRepository {
-    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchReportRepository.class);
+public class PayrollBatchReportDslQuery implements PayrollBatchReportQuery {
+    private static final Logger logger = LoggerFactory.getLogger(PayrollBatchReportDslQuery.class);
 
     private static final Field<UUID> BATCH_ID = field("payroll_batch.id", UUID.class);
     private static final Field<Long> CUSTOMER_ID = field("payroll_batch.customer_id", Long.class);
@@ -35,15 +36,16 @@ public class PayrollBatchReportRepository {
 
     private final DSLContext dsl;
 
+    @Override
     public List<BatchSummary> fetchBatchSummaries(
-            String status,
-            Long customerId,
-            int page,
-            int size,
-            SortField<?> sortField
+        String status,
+        Long customerId,
+        int page,
+        int size,
+        SortField<?> sortField
     ) {
         logger.info(
-            "jOOQ fetching batch summaries status={} customerId={} page={} size={} sort={}",
+            "jOOQ DSL fetching batch summaries status={} customerId={} page={} size={} sort={}",
             status,
             customerId,
             page,
@@ -59,36 +61,37 @@ public class PayrollBatchReportRepository {
         }
 
         List<Record7<UUID, Long, String, Integer, BigDecimal, Instant, Instant>> records = dsl.select(
-                        BATCH_ID,
-                        CUSTOMER_ID,
-                        STATUS,
-                        PAYMENT_COUNT,
-                        TOTAL_AMOUNT,
-                        CREATED_AT,
-                        UPDATED_AT
-                )
-                .from(table("payroll_batch"))
-                .leftJoin(table("payroll_payment")).on(field("payroll_payment.batch_id").eq(BATCH_ID))
-                .where(condition)
-                .groupBy(BATCH_ID, CUSTOMER_ID, STATUS, TOTAL_AMOUNT, CREATED_AT, UPDATED_AT)
-                .orderBy(sortField)
-                .limit(size)
-                .offset(page * size)
-                .fetch();
+                BATCH_ID,
+                CUSTOMER_ID,
+                STATUS,
+                PAYMENT_COUNT,
+                TOTAL_AMOUNT,
+                CREATED_AT,
+                UPDATED_AT
+            )
+            .from(table("payroll_batch"))
+            .leftJoin(table("payroll_payment")).on(field("payroll_payment.batch_id").eq(BATCH_ID))
+            .where(condition)
+            .groupBy(BATCH_ID, CUSTOMER_ID, STATUS, TOTAL_AMOUNT, CREATED_AT, UPDATED_AT)
+            .orderBy(sortField)
+            .limit(size)
+            .offset(page * size)
+            .fetch();
 
         return records.stream()
-                .map(record -> new BatchSummary(
-                        record.value1(),
-                        record.value2(),
-                        record.value3(),
-                        record.value4(),
-                        record.value5(),
-                        record.value6(),
-                        record.value7()
-                ))
-                .toList();
+            .map(record -> new BatchSummary(
+                record.value1(),
+                record.value2(),
+                record.value3(),
+                record.value4(),
+                record.value5(),
+                record.value6(),
+                record.value7()
+            ))
+            .toList();
     }
 
+    @Override
     public SortField<?> resolveSort(String sort) {
         String value = sort == null ? "createdAt" : sort;
         if (value.equalsIgnoreCase("status")) {

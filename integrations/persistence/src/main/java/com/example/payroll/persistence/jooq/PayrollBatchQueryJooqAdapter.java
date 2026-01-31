@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PayrollBatchQueryJooqAdapter implements PayrollBatchQueryPort {
-    private final PayrollBatchReportRepository repository;
+    private final PayrollBatchReportQuery reportQuery;
 
     @Override
     public List<BatchSummary> listBatches(
@@ -20,7 +20,7 @@ public class PayrollBatchQueryJooqAdapter implements PayrollBatchQueryPort {
         int size,
         String sort
     ) {
-        SortField<?> sortField = repository.resolveSort(sort);
-        return repository.fetchBatchSummaries(status, customerId, page, size, sortField);
+        SortField<?> sortField = reportQuery.resolveSort(sort);
+        return reportQuery.fetchBatchSummaries(status, customerId, page, size, sortField);
     }
 }

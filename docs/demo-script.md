@@ -20,6 +20,14 @@ docker compose up -d
 Highlight that jOOQ classes are generated from the live schema after Flyway migrations,
 and sources appear under `integrations/persistence/target/generated-sources/jooq`.
 
+To switch the read model implementation:
+
+```bash
+./mvnw -Pjooq-codegen -pl :persistence -am -DskipTests generate-sources
+./mvnw -pl integrations/bootstrap -am spring-boot:run -Dspring-boot.run.profiles=demo,jooq-dsl
+./mvnw -Pjooq-codegen -pl integrations/bootstrap -am spring-boot:run -Dspring-boot.run.profiles=demo,jooq-codegen
+```
+
 ## 1) Create a payroll batch (JPA write model)
 (We start with the write model: transactional creation of a batch.)
 

@@ -64,6 +64,28 @@ Override database settings if needed:
   -Djooq.codegen.jdbc.password=payroll
 ```
 
+## jOOQ Implementation Profiles
+
+The demo supports two jOOQ implementations for the batch report query:
+- `jooq-dsl` (default): uses `DSL.table/field`
+- `jooq-codegen`: uses generated `com.example.payroll.jooq` tables
+
+Because the codegen implementation lives in the main sources, you must generate jOOQ sources before building/running.
+
+Run with the DSL implementation:
+
+```bash
+./mvnw -Pjooq-codegen -pl :persistence -am -DskipTests generate-sources
+./mvnw -pl integrations/bootstrap -am spring-boot:run -Dspring-boot.run.profiles=demo,jooq-dsl
+```
+
+Run with the codegen implementation (build with the Maven profile as well):
+
+```bash
+./mvnw -Pjooq-codegen -pl :persistence -am -DskipTests generate-sources
+./mvnw -Pjooq-codegen -pl integrations/bootstrap -am spring-boot:run -Dspring-boot.run.profiles=demo,jooq-codegen
+```
+
 ## Architecture
 
 - `domain`: pure domain model and outbound ports (no Spring, no JPA).
