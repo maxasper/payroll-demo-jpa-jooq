@@ -47,6 +47,23 @@ Environment variables for local runs:
 - `DB_USERNAME` (default: `payroll`)
 - `DB_PASSWORD` (default: `payroll`)
 
+## jOOQ Code Generation (Demo)
+
+```bash
+docker compose up -d
+./mvnw -Pjooq-codegen -pl :persistence -am -DskipTests generate-sources
+```
+
+Generated sources are written to `integrations/persistence/target/generated-sources/jooq` and added as a source root.
+Override database settings if needed:
+
+```bash
+./mvnw -Pjooq-codegen -pl :persistence -am -DskipTests generate-sources \
+  -Djooq.codegen.jdbc.url=jdbc:postgresql://localhost:5432/payroll \
+  -Djooq.codegen.jdbc.user=payroll \
+  -Djooq.codegen.jdbc.password=payroll
+```
+
 ## Architecture
 
 - `domain`: pure domain model and outbound ports (no Spring, no JPA).

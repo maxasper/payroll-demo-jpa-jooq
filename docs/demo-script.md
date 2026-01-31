@@ -10,6 +10,16 @@
 
 - Base URL: `http://localhost:8080`
 
+## Optional: jOOQ code generation flow
+
+```bash
+docker compose up -d
+./mvnw -Pjooq-codegen -pl :persistence -am -DskipTests generate-sources
+```
+
+Highlight that jOOQ classes are generated from the live schema after Flyway migrations,
+and sources appear under `integrations/persistence/target/generated-sources/jooq`.
+
 ## 1) Create a payroll batch (JPA write model)
 (We start with the write model: transactional creation of a batch.)
 
